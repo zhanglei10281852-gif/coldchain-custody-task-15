@@ -40,10 +40,7 @@ func (q *queries) GetShipmentReconciliation(ctx context.Context, shipmentID stri
 	if err := q.q.QueryRowContext(ctx, `SELECT COUNT(*) FROM custody_handoffs WHERE shipment_id = ? AND status = 'pending'`, shipmentID).Scan(&pending); err != nil {
 		return domain.ShipmentReconciliation{}, translateError("count pending handoffs", err)
 	}
-	report.SetPendingHandoffs(pending)
-	if pending < 0 {
-		return domain.ShipmentReconciliation{}, fmt.Errorf("invalid pending handoff count")
-	}
+	report.PendingHandoff = pending > 0
 	var open int
 	if err := q.q.QueryRowContext(ctx, `SELECT COUNT(*) FROM excursions WHERE shipment_id = ? AND status IN ('open', 'reviewing')`, shipmentID).Scan(&open); err != nil {
 		return domain.ShipmentReconciliation{}, translateError("count open excursions", err)

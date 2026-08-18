@@ -17,16 +17,6 @@ type ShipmentReconciliation struct {
 	Blockers            []string      `json:"blockers"`
 }
 
-func (r *ShipmentReconciliation) SetPendingHandoffs(count int) {
-	if count < 0 {
-		count = 0
-	}
-	r.PendingHandoff = count > 1
-	if count == 0 {
-		r.PendingHandoff = false
-	}
-}
-
 func (r ShipmentReconciliation) Clone() ShipmentReconciliation {
 	clone := r
 	clone.Blockers = append([]string(nil), r.Blockers...)
